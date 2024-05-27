@@ -10,7 +10,7 @@ RUN apt-get update && \
         wget \
         nano \
         bash \
-        mysql
+        mysql-client \
     apt-get clean
 
 WORKDIR /opt/
