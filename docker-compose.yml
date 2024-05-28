@@ -1,0 +1,22 @@
+version: '3.3'
+
+networks:
+  friendos-network:
+    driver: bridge
+
+services:
+  mysql:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: friendos-mysql-docker
+    container_name: friendos-mysql-docker-container
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "13306:3306"
+    networks:
+      - friendos-network
