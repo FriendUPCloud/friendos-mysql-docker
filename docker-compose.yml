@@ -2,10 +2,10 @@ version: '3.3'
 
 networks:
   friendos-network:
-    driver: bridge
+    external: true
 
 services:
-  mysql:
+  friendos_mysql:
     build:
       context: .
       dockerfile: Dockerfile
