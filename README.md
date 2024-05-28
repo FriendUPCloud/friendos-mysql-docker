@@ -7,12 +7,6 @@ The network (which must be created if it isn't)
 
 docker-compose up --build
 
-## Run the Docker
-
-```bash
-docker run -d -p 13306:3306 --name friendos-mysql-docker-container --network friendos-network friendos-mysql-docker
-```
-
 ## If you want to enter the docker container
 
 ```bash
