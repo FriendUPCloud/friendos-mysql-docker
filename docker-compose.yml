@@ -20,3 +20,4 @@ services:
       - "13306:3306"
     networks:
       - friendos-network
+
