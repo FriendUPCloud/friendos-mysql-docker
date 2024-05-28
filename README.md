@@ -1,14 +1,16 @@
 # friendos-mysql-docker
 Docker image for Friend OS database
 
+The network (which must be created if it isn't)
+
 ## Building
 
-docker build -t friendos-mysql-docker ./
+docker-compose up --build
 
 ## Run the Docker
 
 ```bash
-docker run -d -p 3306:3306 --name friendos-docker-container friendos-mysql-docker
+docker run -d -p 13306:3306 --name friendos-mysql-docker-container --network friendos-network friendos-mysql-docker
 ```
 
 ## If you want to enter the docker container

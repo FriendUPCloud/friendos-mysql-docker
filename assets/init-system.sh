@@ -5,7 +5,7 @@ CONFIG_FILE="/docker-entrypoint-initdb.d/database.cfg"
 MYSQL_ROOT_PASSWORD=fadmin_pwZ	# Root password for MySQL (can be set to a secure value)
 FRIEND_DB_USER=friendos
 FRIEND_DB_PASSWORD=fpassword_Z
-DB_HOST=127.0.0.1
+DB_HOST=localhost
 INIT_DB="/docker-entrypoint-initdb.d/friendcore.sql"
 
 # Function to get the current date
@@ -32,7 +32,7 @@ check_db_update() {
 update_db() {
 	echo "Updating the database..."
 	# Use the correct database
-	mysql -u root -p"$MYSQL_ROOT_PASSWORD" -e "USE friendos; source /docker-entrypoint-initdb.d/friendcore.sql;"
+	mysql -u root -p"$MYSQL_ROOT_PASSWORD" -e "USE friendos; source /docker-entrypoint-initdb.d/friendcore.sql; ALTER TABLE FUser ADD ServerToken varchar(255) DEFAULT '' AFTER Email; UPDATE FUser SET ServerToken='b70ddae5a7ac01d0ad4392174564853312b76f9917d4f90d551645f614963338' WHERE 'Name'='fadmin';"
 	echo "Database update complete."
 	
 	# Log the update date in the config file
@@ -43,8 +43,8 @@ update_db() {
 create_mysql_user() {
 	echo "Creating MySQL user and granting privileges..."
 	mysql -u root -p"$MYSQL_ROOT_PASSWORD" <<-EOSQL
-		CREATE USER IF NOT EXISTS '$FRIEND_DB_USER'@'$DB_HOST' IDENTIFIED BY '$FRIEND_DB_PASSWORD';
-		GRANT ALL PRIVILEGES ON friendos.* TO '$FRIEND_DB_USER'@'$DB_HOST';
+		CREATE USER IF NOT EXISTS '$FRIEND_DB_USER'@'%' IDENTIFIED BY '$FRIEND_DB_PASSWORD';
+		GRANT ALL PRIVILEGES ON friendos.* TO '$FRIEND_DB_USER'@'%';
 		FLUSH PRIVILEGES;
 EOSQL
 	echo "MySQL user created and privileges granted."
@@ -59,11 +59,7 @@ EOSQL
 	echo "Databases created."
 }
 
-# Main script execution
-echo "Starting MySQL service..."
-service mysql start
-
-# Wait for MariaDB to fully start
+# Wait for MySQL to fully start
 until mysqladmin ping --silent; do
 	echo "Waiting for MySQL to start..."
 	sleep 1
@@ -82,7 +78,5 @@ else
 	echo "No database update performed."
 fi
 
-# Start any required services or further initialization here
-
-exec "$@"
+exec "tail -f /var/log/mysql/error.log"
 
