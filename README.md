@@ -3,7 +3,7 @@ Docker image for Friend OS database
 
 The network (which must be created if it isn't)
 
-## Building
+## Building and running
 
 docker-compose up --build
 
